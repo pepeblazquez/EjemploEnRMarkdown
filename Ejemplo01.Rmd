@@ -1,0 +1,34 @@
+---
+title: "Primer reporte en R Markdown"
+author: "Jose Luis Pacheco Blazquez 135780"
+date: "Tuesday, January 20, 2015"
+output: html_document
+---
+```{r paquetes}
+library(ggmap)
+
+```{r GenerarDatos, message=FALSE}
+clave.unica <- rep("135780",3)
+es.mixto <- c(universidad = 1, preparatoria = 1, secundaria = 1)
+universidad <- geocode("ITAM")
+preparatoria<- geocode("Colegio Mexico Bachillerato")
+secundaria <- geocode("Heraldos de Mexico")
+educacion <- rbind(universidad, preparatoria, secundaria)
+educacion <- cbind(clave.unica, es.mixto, educacion)
+```
+
+```{r ObtenciónCoordenadasYMapas, warning=FALSE, message=FALSE}
+limites <- make_bbox(lon, lat, educacion, f = 0.7)
+mapa<- get_map(location = limites,
+               maptype = "roadmap",
+               source = "google")
+```
+
+```{r GraficarLocalizaciones, echo=FALSE}
+ggmap(mapa) +
+  geom_point(data = educacion,
+             aes(x=lon, y = lat),
+             size = 4, alpha = 0.6, colour = "red")
+```
+
+
